@@ -1,0 +1,64 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+:root{
+    --maxImgSize: 18ch;
+}
+
+body{
+    background-color: #EEF2FF;
+}
+
+#messages{
+    display: flex;
+    flex-direction: column;
+}
+
+.message{
+    display: flex;
+    flex-direction: row;
+    margin-top: 3px;
+    width: 100vw;
+    height: fit-content;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    clear: both;
+}
+
+.message>*{
+    height: fit-content;
+}
+
+.text{
+    display: flex;
+    flex-direction: column;
+}
+
+.imgDiv{
+    margin-right: 1ch;
+    margin-left: 0.5ch;
+    margin-bottom: 0px;
+    border: solid 1px black;
+    width: var(--maxImgSize);
+}
+
+.author{
+    color: rgb(123, 202, 123);
+    font-size: 0.9rem;
+}
+
+#descriptor{
+    display: flex;
+    color: rgb(175, 10, 15);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 0.2rem solid black;
+}
+
+#descriptorIMG{
+    width: 15rem;
+    height: fit-content;
+}
