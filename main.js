@@ -1,46 +1,71 @@
 let rendered = 0;
-let testNumber = 1;
-let TEST = document.getElementById('TEST');
-function makePost(imgSrc,titleText,messageText){
+let bottom = document.getElementById('bottomDetect');
+let lastRenderedPos;
+var jsonData;
+
+async function getJsonData() {
+    jsonData = await fetch('./DATAwImg.json').then(response => {
+        if(!response.ok){
+            console.error("Response NOT ok")
+        }
+        return response.json();
+    }).then(data =>{
+        jsonData = data;
+        makePost();
+        return data;
+    })
+}
+function makePost(){
+    if(jsonData == null){
+        throw new Error("jsonData is null");
+    }
     let messages = document.getElementById('messages');
     let date = new Date();
     let mainMessage = document.createElement('div');
         mainMessage.classList.add("message");
         let img = document.createElement('img');
             img.classList.add("imgDiv")
-            img.src = imgSrc.toString();
+            img.src = `${jsonData[rendered].img}`
             mainMessage.appendChild(img);
         let textDiv = document.createElement('div');
             textDiv.classList.add('text');
             let author = document.createElement('div');
-                author.innerText = "author - "+ `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
+                author.innerText = `${jsonData[rendered].author} - `+ `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
                 author.classList.add('author');
                 textDiv.appendChild(author);
             let title = document.createElement('h1');
-                title.innerText = `${titleText}`
+                title.innerText = `${jsonData[rendered].Title}`
                 textDiv.appendChild(title);
             let para = document.createElement('p');
-                para.innerText = `${messageText}`
+                para.innerText = `${jsonData[rendered].message}`
                 textDiv.appendChild(para);
         mainMessage.appendChild(textDiv);
     messages.appendChild(mainMessage);
-    TEST.style.order = rendered +2;
-testNumber++;
+    bottom.style.order = rendered +2;
+lastRenderedPos = getAbsolutePosition(mainMessage);
 rendered++;
 return mainMessage;
 }
 function testPostList(amount){
     for(i=1;i<=amount;i++){
-        makePost("https://plus.unsplash.com/premium_photo-1669218057891-c79da315d253?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YW1hemluZyUyMHBpY3R1cmV8ZW58MHx8MHx8fDA%3D",testNumber,testNumber);
+        getJsonData();
     }
     return true
 }
 const handleScroll = (entries,observer)=>{
     entries.forEach(entry => {
         if(entry.isIntersecting){
+            if(lastRenderedPos){
+                scroll(0,lastRenderedPos);
+            }
             testPostList(30);
         }
     });
 }
+function getAbsolutePosition(element) {
+    const rect = element.getBoundingClientRect();
+    return rect.bottom + window.scrollY
+}
+
 const observer = new IntersectionObserver(handleScroll)
-observer.observe(TEST);
+observer.observe(bottom);
